@@ -12,7 +12,7 @@ def setup_cans(env):
       env[i][j] = random.randint(0, 1)
       
       
-env = np.zeros((4, 4))
+env = np.zeros((10, 10))
 q_mat = np.zeros((pow(3, 5), 5)) #3^5 possible states, 5 actions per state
 robby = Robot(env)
 
@@ -32,7 +32,6 @@ for episode in range(N):
   setup_cans(env)
   robby.reset(env)
   state = robby.sense(env)
-  print(f"episode {episode}")
   for move in range(m):
     action = robby.choose_act(q_mat, epsilon)
     reward = robby.act(action, env) #also updates robby's total reward
@@ -56,17 +55,17 @@ plt.close()
 epsilon = 0.1
 #testing loop
 for episode in range(N):
-  pass
-  #reset env and robot
-  #DO NOT UPDATE EPSILON
+  setup_cans(env)
+  robby.reset(env)
+  state = robby.sense(env)
   for move in range(m):
-    pass
-    #robot does its stuff
-    #DO NOT UPDATE Q-MAT
-  #add robot's total reward to test_rewards
+    action = robby.choose_act(q_mat, epsilon)
+    reward = robby.act(action, env)
+    new_state = robby.sense(env)
+  test_rewards.append(robby.total_reward)
 
-#calculate av and stdev of test_rewards
-
-#plot training_reward, save test statistics
+av = statistics.mean(test_rewards)
+stdev = statistics.stdev(test_rewards)
+print(f"Test Average: {av}, Test Stdev: {stdev}")
 
 
