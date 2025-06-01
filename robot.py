@@ -1,8 +1,8 @@
 #simon parker
 import random
+import numpy as np
 
 #this takes a ternary string (state representation for robby) and turns it into an index for the Q-matrix
-#5 digit ternary string
 def ter_to_dec(string):
   result = 0
   for i in range(len(string)):
@@ -23,12 +23,13 @@ class Robot():
     self.state = ""
     self.total_reward = 0 
 
-  def choose_act(self, q_mat, eta):
-    row = list(q_mat[ter_to_dec(self.state)])
-    opt_move = row.index(max(row))
-    if random.random() < eta:
+  def choose_act(self, q_mat, epsilon):
+    row = q_mat[ter_to_dec(self.state)]
+    moves = list(np.where(row == max(list(row)))[0]) #a list of best moves in the current state
+    m = moves[random.randint(0, len(moves) - 1)]
+    if random.random() < epsilon:
       return random.randint(0, 4)
-    return opt_move
+    return m
 
   def act(self, action, env): #5 possible actions, +10 for picking up can, -5 for hitting wall, -1 for picking up nothing
     reward = 0
@@ -59,8 +60,8 @@ class Robot():
           env[self.r][self.c] = 0
         else:
           reward -= 1
-      self.reward += reward
-      return reward
+    self.total_reward += reward
+    return reward
 
   def sense(self, env): #env is a numpy array
     state = ""
