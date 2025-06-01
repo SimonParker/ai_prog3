@@ -28,7 +28,7 @@ setup_cans(env)
 epochs = []
 
 #training loop
-for episode in range(N):
+for episode in range(N + 1): #i want the plot to include episode 5000
   setup_cans(env)
   robby.reset(env)
   state = robby.sense(env)
